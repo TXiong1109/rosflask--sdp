@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CoBo staff console</title>
+  <style>
+    body {
+      text-align: center;
+      background-color: #F8F8FF;
+    }
+
+    #content{
+      width: 400px;
+      margin: 0 auto;
+    }
+
+    .button {
+      background-color: #00FF7F;
+      color: black;
+      border: 2px solid #00FF7F;
+    }
+
+    select {
+      width: 250px;
+      height: 30px;
+      padding: 0px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    input[type=submit] {
+      width: 130px;
+      height: 30px;
+      margin-left: 15px;
+      padding: 0px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #00FF7F;
+      color: black;
+      font-size: 16px;
+      font-weight: 300;
+
+    }
+
+    #robots {
+      margin-top: 30px;
+    }
+
+    .robot {
+      display: inline-block;
+      width: 100px;
+      height: 30px;
+      border: solid 1px #999;
+      margin-left: 10px;
+      font-size: 20px;
+      font-weight: 200;
+      text-align: center;
+      vertical-align: middle;
+      padding-top: 10px
+    }
+
+    table {
+      width: 400px;
+      border-collapse: collapse;
+      margin: 0 auto;
+      margin-top: 30px;
+    }
+
+    table tr td {
+      border: solid 1px #999;
+    }
+
+    table td:nth-child(2) {
+      font-size: 16px;
+      width: 50%;
+      background: #fff;
+    }
+
+    .abutton {
+      display: inline-block;
+      width: 250px;
+      height: 30px;
+      padding: 0px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #00FF7F;
+      color: black;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 30px;
+      text-decoration: none;
+    }
+
+    .alert{
+        background: #FFE599;
+        height: 30px;
+        line-height: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="narbor">
+    <div style="float: left; font-weight: bolder; font-size: 20px;">
+      CoBo's Staff
+    </div>
+    <div style="float:right;">
+      <img src="/static/icon.png" style="width: 15px; height: 15px;">
+        Welcome, {{session['username']}}|<a href="/logout" style="text-decoration: none;">Logout</a>
+    </div>
+    <br>
+  </div>
+  <hr>
+  <div id="content">
+    <h1>CoBo's Staff console</h1>
+
+    <form action="/json" method="get">
+      <select name="jname" required="required">
+        <option value="">Please choose one output</option>
+        {% for json_name in json_names %}
+          {% if json_name == jname %}
+            <option value="{{json_name}}" selected>{{json_name}}</option>
+          {% else %}
+            <option value="{{json_name}}">{{json_name}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+
+      <input type="submit" value="Start" class="button" />
+      <!-- <input type="submit" value="End"  class="button" /> -->
+    </form>
+
+     <h2>available robots:</h2>
+    {% if robots %}
+    <div id="robots">
+      {% for robot in robots %}
+        <div class="robot">
+          <a href="/{{jname}}/robot/{{ loop.index0 }}">{{ robot["ID"] }}</a>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% endif %}
+
+    <h1>
+      <table>
+        <tr>
+          <td>
+            <font size="3">CoBo ID</font>
+          </td>
+          {% if robot %}
+          <td>
+              {{ robot["ID"] }}
+          </td>
+          {% else %}
+          <td></td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td>
+            <font size="3">CoBo Location</font>
+          </td>
+          <td>
+            {% if location %}
+              {{ location }}
+            {% else %}
+              Reception
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <font size="3">CoBo battery</font>
+          </td>
+          {% if robot %}
+          <td>
+            {{robot["Battery Level"]}}
+          </td>
+          {% else %}
+          <td></td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td>
+            <font size="3">Reservation Today</font>
+          </td>
+          <td> test</td>
+        </tr>
+        <tr>
+          <td>
+            <font size="3">Test name</font>
+          </td>
+          <td>Covid-19 test
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <font size="3">State</font>
+          </td>
+          {% if robot %}
+          <td>{{robot["State"]["State"]}}</td>
+          {% else %}
+          <td></td>
+          {% endif %}
+        </tr>
+      </table>
+    </h1>
+      <h2>Response to user：</h2>
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/GOToReception" class="abutton" style="margin-left: 20px;">GO To Reception</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">GO To Reception</a>
+      {% endif %}
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/GoToBooth" class="abutton" style="margin-left: 20px;">Go To Booth</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">Go To Booth</a>
+      {% endif %}
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/GoToExit" class="abutton" style="margin-left: 20px;">Go To Exit</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">Go To Exit</a>
+      {% endif %}
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/GoToCharging" class="abutton" style="margin-left: 20px;">Go To Charging</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">Go To Charging</a>
+      {% endif %}
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/GoToDropOff" class="abutton" style="margin-left: 20px;">Go To Drop Off</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">Go To Drop Off</a>
+      {% endif %}
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/Halt" class="abutton" style="margin-left: 20px;">Halt</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">Halt</a>
+      {% endif %}
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/Resume" class="abutton" style="margin-left: 20px;">Resume</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">Resume</a>
+      {% endif %}
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/HelpCompleteContinue" class="abutton" style="margin-left: 20px;">Help Complete Continue</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">Help Complete Continue</a>
+      {% endif %}
+      {% if robot %}
+          <a href="/{{jname}}/robot/{{ robot['ID']}}/HelpCompleteRestart" class="abutton" style="margin-left: 20px;">Help Complete Restart</a>
+          {% else %}
+          <a href="" class="abutton" style="margin-left: 20px;">Help Complete Restart</a>
+      {% endif %}
+
+  </div>
+</body>
+
+</html>

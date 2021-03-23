@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+        <node name="app_node" pkg="flask_sdp_main" type ="app.py" output="screen"/>
+</launch>
